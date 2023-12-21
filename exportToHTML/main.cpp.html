@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>main.cpp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #b3ae60;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #cf8e6d;}
+.s4 { color: #bcbec4;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.cpp</font>
+</center></td></tr></table>
+<pre><span class="s0">#include </span><span class="s2">&lt;iostream&gt;</span>
+<span class="s0">#include </span><span class="s2">&lt;fstream&gt;</span>
+<span class="s0">#include </span><span class="s2">&lt;map&gt;</span>
+
+<span class="s3">using namespace </span><span class="s1">std</span><span class="s4">;</span>
+
+<span class="s3">class </span><span class="s1">ProcessIngredients </span><span class="s4">{</span>
+<span class="s3">private</span><span class="s4">:</span>
+    <span class="s1">map </span><span class="s4">&lt;</span><span class="s1">string</span><span class="s4">, </span><span class="s1">map </span><span class="s4">&lt;</span><span class="s1">string</span><span class="s4">, </span><span class="s3">double </span><span class="s4">&gt;&gt; </span><span class="s1">recipeDetails</span><span class="s4">;</span>
+
+<span class="s3">public</span><span class="s4">:</span>
+    <span class="s3">void </span><span class="s1">ProcessIngredientAmounts</span><span class="s4">(</span><span class="s3">const </span><span class="s1">string </span><span class="s4">&amp;</span><span class="s1">file</span><span class="s4">) {</span>
+        <span class="s1">ifstream ingredientsFile</span><span class="s4">(</span><span class="s1">file</span><span class="s4">);</span>
+        <span class="s1">string ingredientRecipe</span><span class="s4">, </span><span class="s1">ingredient</span><span class="s4">;</span>
+        <span class="s3">double </span><span class="s1">ingredientQuantity</span><span class="s4">;</span>
+
+        <span class="s5">//Fills in the recipeDetails map with the recipe name, ingredient and the</span>
+        <span class="s5">//order amount</span>
+        <span class="s3">while </span><span class="s4">(</span><span class="s1">ingredientsFile </span><span class="s4">&gt;&gt; </span><span class="s1">ingredientRecipe </span><span class="s4">&gt;&gt; </span><span class="s1">ingredient </span><span class="s4">&gt;&gt; </span><span class="s1">ingredientQuantity</span><span class="s4">) {</span>
+                <span class="s1">recipeDetails</span><span class="s4">[</span><span class="s1">ingredientRecipe</span><span class="s4">][</span><span class="s1">ingredient</span><span class="s4">] += </span><span class="s1">ingredientQuantity</span><span class="s4">;</span>
+            <span class="s4">}</span>
+        <span class="s1">ingredientsFile</span><span class="s4">.</span><span class="s1">close</span><span class="s4">();</span>
+    <span class="s4">}</span>
+
+    <span class="s3">void </span><span class="s1">calculateIngredientTotal</span><span class="s4">(</span><span class="s3">const </span><span class="s1">string </span><span class="s4">&amp;</span><span class="s1">file</span><span class="s4">) {</span>
+        <span class="s1">ifstream ordersFile</span><span class="s4">(</span><span class="s1">file</span><span class="s4">);</span>
+        <span class="s1">map </span><span class="s4">&lt;</span><span class="s1">string</span><span class="s4">, </span><span class="s3">double</span><span class="s4">&gt; </span><span class="s1">totalIngredients</span><span class="s4">;</span>
+        <span class="s1">string orderRecipe</span><span class="s4">;</span>
+        <span class="s3">double </span><span class="s1">orderQuantity</span><span class="s4">;</span>
+
+        <span class="s5">//Fills in the totalIngredients map with the ingredient and the correct total</span>
+        <span class="s5">//ingredient amount needed for all the recipes using the previous map and the order file</span>
+        <span class="s3">while </span><span class="s4">(</span><span class="s1">ordersFile </span><span class="s4">&gt;&gt; </span><span class="s1">orderRecipe </span><span class="s4">&gt;&gt; </span><span class="s1">orderQuantity</span><span class="s4">) {</span>
+                <span class="s3">for </span><span class="s4">(</span><span class="s3">const auto </span><span class="s4">&amp;</span><span class="s1">processOrders </span><span class="s4">: </span><span class="s1">recipeDetails</span><span class="s4">[</span><span class="s1">orderRecipe</span><span class="s4">]) {</span>
+                    <span class="s1">totalIngredients</span><span class="s4">[</span><span class="s1">processOrders</span><span class="s4">.</span><span class="s1">first</span><span class="s4">] += </span><span class="s1">processOrders</span><span class="s4">.</span><span class="s1">second </span><span class="s4">* </span><span class="s1">orderQuantity</span><span class="s4">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s1">ordersFile</span><span class="s4">.</span><span class="s1">close</span><span class="s4">();</span>
+        <span class="s5">//outputs the ingredient and the total ingredient amount needed</span>
+        <span class="s5">// from the totalIngredients map</span>
+        <span class="s3">for </span><span class="s4">(</span><span class="s3">const auto </span><span class="s4">&amp;</span><span class="s1">ingredientAmount </span><span class="s4">: </span><span class="s1">totalIngredients</span><span class="s4">) {</span>
+            <span class="s1">cout </span><span class="s4">&lt;&lt; </span><span class="s1">ingredientAmount</span><span class="s4">.</span><span class="s1">first </span><span class="s4">&lt;&lt; </span><span class="s2">&quot; &quot; </span><span class="s4">&lt;&lt; </span><span class="s1">ingredientAmount</span><span class="s4">.</span><span class="s1">second </span><span class="s4">&lt;&lt; </span><span class="s1">endl</span><span class="s4">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">};</span>
+
+<span class="s3">int </span><span class="s1">main</span><span class="s4">() {</span>
+    <span class="s1">ProcessIngredients ingredientProcessor</span><span class="s4">;</span>
+    <span class="s1">ingredientProcessor</span><span class="s4">.</span><span class="s1">ProcessIngredientAmounts</span><span class="s4">(</span><span class="s2">&quot;ingredients.txt&quot;</span><span class="s4">);</span>
+    <span class="s1">ingredientProcessor</span><span class="s4">.</span><span class="s1">calculateIngredientTotal</span><span class="s4">(</span><span class="s2">&quot;orders.txt&quot;</span><span class="s4">);</span>
+    <span class="s3">return </span><span class="s6">0</span><span class="s4">;</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>
